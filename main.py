@@ -55,8 +55,8 @@ for _ in range(100):
 # Insert Customers data
 connection = create_connection()
 customers_query = """
-INSERT INTO BDB_Customers (FirstName, LastName, DateOfBirth, Gender, Email, PhoneNumber, Address, City, State, ZipCode)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO BDB_Customers ( FirstName, LastName, DateOfBirth, Gender, Email, PhoneNumber, Address, City, State, ZipCode)
+VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 for customer in customers:
     execute_query(connection, customers_query, customer)
@@ -191,41 +191,42 @@ VALUES (%s, %s, %s, %s)
 for payment in payments:
     execute_query(connection, payments_query, payment)
 
-# Generate CustomerFeedback data
-feedbacks = []
-for feedback_id in range(1, 201):
-    feedbacks.append((
+# Generate CustomerInteractions data
+interactions = []
+for interaction_id in range(1, 501):
+    interactions.append((
         random.randint(1, 100),
-        fake.date_between(start_date='-5y', end_date='today'),
-        fake.paragraph(nb_sentences=3),
-        random.randint(1, 5)
-    ))
-
-# Insert CustomerFeedback data
-feedbacks_query = """
-INSERT INTO BDB_CustomerFeedback (CustomerID, FeedbackDate, FeedbackText, Rating)
-VALUES (%s, %s, %s, %s)
-"""
-for feedback in feedbacks:
-    execute_query(connection, feedbacks_query, feedback)
-
-# Generate EmployeePerformance data
-performance_reviews = []
-for performance_id in range(1, 201):
-    performance_reviews.append((
         random.randint(1, 50),
+        random.choice(['Email', 'Phone Call', 'In-Person', 'Chat']),
         fake.date_between(start_date='-5y', end_date='today'),
-        random.randint(1, 5),
         fake.paragraph(nb_sentences=3)
     ))
 
-# Insert EmployeePerformance data
-performance_reviews_query = """
-INSERT INTO BDB_EmployeePerformance (EmployeeID, ReviewDate, PerformanceScore, Comments)
+# Insert CustomerInteractions data
+interactions_query = """
+INSERT INTO BDB_CustomerInteractions (CustomerID, EmployeeID, InteractionType, InteractionDate, Notes)
+VALUES (%s, %s, %s, %s, %s)
+"""
+for interaction in interactions:
+    execute_query(connection, interactions_query, interaction)
+
+# Generate ProductUsage data
+usages = []
+for usage_id in range(1, 501):
+    usages.append((
+        random.randint(1, 100),
+        random.choice(['Credit Card', 'Loan', 'Savings Account']),
+        round(random.uniform(100, 10000), 2),
+        fake.date_between(start_date='-5y', end_date='today')
+    ))
+
+# Insert ProductUsage data
+usages_query = """
+INSERT INTO BDB_ProductUsage (CustomerID, ProductType, UsageAmount, UsageDate)
 VALUES (%s, %s, %s, %s)
 """
-for performance_review in performance_reviews:
-    execute_query(connection, performance_reviews_query, performance_review)
+for usage in usages:
+    execute_query(connection, usages_query, usage)
 
 # Close the connection
 connection.close()
